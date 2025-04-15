@@ -7,6 +7,18 @@ const app = express();
 app.use(express.json());
 
 
+// Test route to check email sending
+app.post("/test-email", async (req, res, next) => {
+  const { to, subject, text } = req.body;
+
+  try {
+    await sendEmail(to, subject, text);
+    res.status(200).json({ message: "Email sent successfully!" });
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Routes
 
 
