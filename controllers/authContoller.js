@@ -26,7 +26,8 @@ exports.registerUser = asyncHandler(async (req, res) => {
 
 // Login and send OTP
 exports.loginUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { email } = req.body;
+  const password = req.body.password?.toString();
 
   const user = await User.findOne({ email });
   if (!user || !(await bcrypt.compare(password, user.password))) {
@@ -48,14 +49,15 @@ exports.loginUser = asyncHandler(async (req, res) => {
 
 // Verify OTP
 exports.verifyOTP = asyncHandler(async (req, res) => {
-  const { email, otp } = req.body;
+  const { email } = req.body;
+  const otp = req.body.otp?.toString();
 
   const user = await User.findOne({ email });
   if (!user || user.otp !== otp || user.otpExpires < Date.now()) {
     res.status(400);
     throw new Error("Invalid or expired OTP");
   }
-  
+
   if (user.isVerified) {
     res.status(400);
     throw new Error("User already verified.");
