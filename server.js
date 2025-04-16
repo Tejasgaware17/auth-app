@@ -1,10 +1,14 @@
 const express = require("express");
 require("dotenv").config();
+const connectDB = require("./config/db")
 const authRoutes = require("./routes/auth");
 const sendEmail = require("./utils/sendEmail");
 
-const app = express();
 
+// Database connection
+connectDB();
+
+const app = express();
 app.use(express.json());
 
 // Routes
