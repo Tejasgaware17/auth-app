@@ -55,9 +55,15 @@ exports.verifyOTP = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Invalid or expired OTP");
   }
+  
+  if (user.isVerified) {
+    res.status(400);
+    throw new Error("User already verified.");
+  }
 
   user.otp = undefined;
   user.otpExpires = undefined;
+  user.isVerified = true;
   await user.save();
 
   const token = generateToken(user._id);
