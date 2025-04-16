@@ -1,11 +1,14 @@
 const express = require("express");
 require("dotenv").config();
+const authRoutes = require("./routes/auth");
 const sendEmail = require("./utils/sendEmail");
 
 const app = express();
 
 app.use(express.json());
 
+// Routes
+app.use("/api/auth/", authRoutes);
 
 // Test route to check email sending
 app.post("/test-email", async (req, res, next) => {
@@ -18,10 +21,6 @@ app.post("/test-email", async (req, res, next) => {
     next(err);
   }
 });
-
-// Routes
-
-
 
 // Error handling middleware
 const { notFound, errorHandler } = require("./middlewares/errorMiddleware");
