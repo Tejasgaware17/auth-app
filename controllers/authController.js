@@ -66,6 +66,7 @@ const generateOTP = async (user) => {
 
   user.otp = otp;
   user.otpExpires = otpExpires;
+  user.isVerified = false;
   await user.save();
   return otp;
 }
