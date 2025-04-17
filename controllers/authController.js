@@ -38,17 +38,37 @@ exports.loginUser = asyncHandler(async (req, res) => {
     throw new Error("Invalid email or password");
   }
 
+  const otp = await generateOTP(user)
+  await sendEmail(user.email, "Your OTP Code", `Your OTP is: ${otp}`);
+
+  res.status(200).json({ message: "OTP sent to email!" });
+});
+
+// Resend OTP
+exports.resendOTP = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  const otp = await generateOTP(user)
+  await sendEmail(user.email, "Your New OTP Code", `Your new OTP is: ${otp}`);
+
+  res.status(200).json({ message: "OTP resent to email!" });
+});
+
+const generateOTP = async (user) => {
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
   const otpExpires = new Date(Date.now() + 5 * 60 * 1000); // 5 mins
 
   user.otp = otp;
   user.otpExpires = otpExpires;
   await user.save();
-
-  await sendEmail(user.email, "Your OTP Code", `Your OTP is: ${otp}`);
-
-  res.status(200).json({ message: "OTP sent to email!" });
-});
+  return otp;
+}
 
 // Verify OTP
 exports.verifyOTP = asyncHandler(async (req, res) => {
@@ -95,7 +115,9 @@ exports.forgotPassword = asyncHandler(async (req, res) => {
   user.resetPasswordExpires = Date.now() + 10 * 60 * 1000; // 10 mins
   await user.save();
 
-  const resetURL = `${req.protocol}://${req.get("host")}/api/auth/reset-password/${resetToken}`;
+  const resetURL = `${req.protocol}://${req.get(
+    "host"
+  )}/api/auth/reset-password/${resetToken}`;
   const resetMessage = `Reset your password with this link:\n${resetURL}\n\nThis link will expire in 10 minutes. Do not share this link anywhere.`;
 
   await sendEmail(user.email, "Password reset request", resetMessage);
