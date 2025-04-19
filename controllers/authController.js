@@ -38,10 +38,42 @@ exports.loginUser = asyncHandler(async (req, res) => {
     throw new Error("Invalid email or password");
   }
 
-  const otp = await generateOTP(user)
+  const otp = await generateOTP(user);
   await sendEmail(user.email, "Your OTP Code", `Your OTP is: ${otp}`);
 
   res.status(200).json({ message: "OTP sent to email!" });
+});
+
+// TESTING login
+exports.loginStatic = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  if (process.env.NODE_ENV === "production") {
+    res.status(403);
+    throw new Error("Static login disabled in production.");
+  }
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    res.status(400);
+    throw new Error(`Wrong email: ${email}`);
+  }
+
+  user.otp = undefined;
+  user.otpExpires = undefined;
+  user.isVerified = true;
+  await user.save();
+
+  const token = generateToken(user._id);
+  console.log(`token: ${token}`);
+  res.status(200).json({
+    message: "Login successfull",
+    token,
+    user: {
+      email: user.email,
+      role: user.role,
+    },
+  });
 });
 
 // Resend OTP
@@ -54,7 +86,7 @@ exports.resendOTP = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 
-  const otp = await generateOTP(user)
+  const otp = await generateOTP(user);
   await sendEmail(user.email, "Your New OTP Code", `Your new OTP is: ${otp}`);
 
   res.status(200).json({ message: "OTP resent to email!" });
@@ -69,7 +101,7 @@ const generateOTP = async (user) => {
   user.isVerified = false;
   await user.save();
   return otp;
-}
+};
 
 // Verify OTP
 exports.verifyOTP = asyncHandler(async (req, res) => {
