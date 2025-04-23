@@ -30,21 +30,24 @@ A secure and modular authentication system built with Node.js, Express, and Mong
 
 2. **Install dependencies**:
 
-    npm install
+   ```bash
+   npm install
 
 3. **Configure environment variables**:
    
    Create a .env file in the root directory and add the following:
-    PORT=8080
-    MONGO_URI=your_mongodb_connection_string
-    JWT_SECRET=your_jwt_secret
-    EMAIL_USER=your_email@example.com
-    EMAIL_PASS=your_email_password
-    NODE_ENV=development
+   ```bash
+   PORT=8080
+   MONGO_URI=your_mongodb_connection_string
+   JWT_SECRET=your_jwt_secret
+   EMAIL_USER=your_email@example.com
+   EMAIL_PASS=your_email_password
+   NODE_ENV=development
 
 4. **Start the server**:
 
-    npm start
+   ```bash
+   npm start
 
 ### 📬 API Endpoints
 
@@ -83,7 +86,7 @@ Emails are sent using nodemailer with Gmail's SMTP service. Ensure that:
 
 ### 📄 License
 
-This project is licensed under ISC License.
+This project is licensed
 
 ### 🙌 Acknowledgments
 
