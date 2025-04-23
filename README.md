@@ -83,7 +83,7 @@ Emails are sent using nodemailer with Gmail's SMTP service. Ensure that:
 
 ### 📄 License
 
-This project is licensed under ISC License.
+This project is licensed
 
 ### 🙌 Acknowledgments
 
