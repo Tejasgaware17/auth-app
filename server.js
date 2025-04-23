@@ -1,8 +1,7 @@
 const express = require("express");
 require("dotenv").config();
 const connectDB = require("./config/db");
-const protectedRoutes = require("./routes/protectedRoutes");
-const authRoutes = require("./routes/auth");
+const routes = require("./routes/indexRoute")
 const sendEmail = require("./utils/sendEmail");
 
 // Database connection
@@ -12,8 +11,7 @@ const app = express();
 app.use(express.json());
 
 // Routes
-app.use("/api/protected/", protectedRoutes);
-app.use("/api/auth/", authRoutes);
+app.use("/api/", routes);
 
 // Test route to check email sending
 app.post("/test-email", async (req, res, next) => {
