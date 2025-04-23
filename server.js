@@ -4,6 +4,19 @@ const connectDB = require("./config/db");
 const routes = require("./routes/indexRoute")
 const sendEmail = require("./utils/sendEmail");
 
+const requiredEnvVars = [
+  "PORT",
+  "MONGO_URI",
+  "JWT_SECRET",
+  "EMAIL_USER",
+  "EMAIL_PASS",
+];
+requiredEnvVars.forEach((varName) => {
+  if (!process.env[varName]) {
+    throw new Error(`Missing required environment variable: ${varName}`);
+  }
+});
+
 // Database connection
 connectDB();
 
